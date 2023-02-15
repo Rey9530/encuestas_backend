@@ -1,8 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using encuestas_backend.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace encuestas_backend
 {
@@ -10,6 +13,7 @@ namespace encuestas_backend
 	{
 		public StartUp(IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
@@ -34,10 +38,38 @@ namespace encuestas_backend
                 }); 
              //service.AddAuthentication();
             service.AddEndpointsApiExplorer();
-            service.AddSwaggerGen();
+            service.AddSwaggerGen( c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi Cuestionario", Version = "V1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name="Authorization",
+                    Type=SecuritySchemeType.ApiKey,
+                    Scheme="Bearer",
+                    BearerFormat="JWT",
+                    In=ParameterLocation.Header
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
+            });
             service.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            service.AddTransient<HashService>();
             // service.AddAutoMapper(typeof(StartUp));
         }
 
