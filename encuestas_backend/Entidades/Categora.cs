@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using encuestas_backend.Enums;
 
 namespace api_autore_libros.Entidades
 {
@@ -8,5 +9,6 @@ namespace api_autore_libros.Entidades
         [Required]
         [StringLength(40)]
         public string Nombre { get; set; }
+        public EstadosRegistro Estado { get; set; } = EstadosRegistro.Activo;
     }
 }

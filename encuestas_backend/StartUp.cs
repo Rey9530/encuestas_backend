@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using encuestas_backend.Entidades;
 using encuestas_backend.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -65,7 +66,7 @@ namespace encuestas_backend
                     }
                 });
             });
-            service.AddIdentity<IdentityUser, IdentityRole>()
+            service.AddIdentity<UserCustom, IdentityRole>()
                 .AddEntityFrameworkStores<AplicationDbContext>()
                 .AddDefaultTokenProviders();
 

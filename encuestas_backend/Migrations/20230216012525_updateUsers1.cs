@@ -1,0 +1,40 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace encuestasbackend.Migrations
+{
+    /// <inheritdoc />
+    public partial class updateUsers1 : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "FeChaCreacion",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "daaaa",
+                table: "AspNetUsers");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<DateTime>(
+                name: "FeChaCreacion",
+                table: "AspNetUsers",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<string>(
+                name: "daaaa",
+                table: "AspNetUsers",
+                type: "text",
+                nullable: true);
+        }
+    }
+}

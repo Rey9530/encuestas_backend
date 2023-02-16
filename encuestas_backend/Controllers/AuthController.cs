@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using encuestas_backend.Entidades;
 using encuestas_backend.TDOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,11 @@ namespace encuestas_backend.Controllers
 	[Route("api/auth")]
 	public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<UserCustom> userManager;
         private readonly IConfiguration configuration;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly SignInManager<UserCustom> signInManager;
 
-        public AuthController( UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
+        public AuthController( UserManager<UserCustom> userManager, IConfiguration configuration, SignInManager<UserCustom> signInManager)
 		{
             this.userManager = userManager;
             this.configuration = configuration;
@@ -47,7 +48,7 @@ namespace encuestas_backend.Controllers
 		[HttpPost("registrar")]
 		public async Task<ActionResult<RespuestaAuth>> Registrar(UsuarioRegistro usuarioRegistro) {
 
-			var usuario = new IdentityUser { UserName = usuarioRegistro.email, Email = usuarioRegistro.email };
+			var usuario = new UserCustom { UserName = usuarioRegistro.email, Email = usuarioRegistro.email };
 			var resultado = await userManager.CreateAsync(usuario, usuarioRegistro.Password);
 			if (resultado.Succeeded)
 			{
