@@ -22,6 +22,7 @@ namespace encuestas_backend
         public void ConfigurationServices(IServiceCollection service)
         {
 
+            service.AddAutoMapper(typeof(StartUp));
             // service.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             service.AddControllers();
 
