@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json.Serialization;
 using encuestas_backend.Entidades;
 using encuestas_backend.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +24,7 @@ namespace encuestas_backend
         {
 
             service.AddAutoMapper(typeof(StartUp));
-            // service.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            service.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             service.AddControllers();
 
             service.AddDbContext<AplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));

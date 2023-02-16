@@ -46,6 +46,11 @@ namespace encuestas_backend.Controllers
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<CategoriaDTO>> UpdatetOne(int id,[FromBody] CategoriaCrearDTO categoriaCrearDTO){
+
+            var datos = await context.Categorias.FirstOrDefaultAsync( e => e.Id==id );
+            if(datos==null){
+                return NotFound();
+            }
             var categoria = mapper.Map<Categorias>(categoriaCrearDTO);
             categoria.Id=id;
             context.Entry(categoria).State = EntityState.Modified;
