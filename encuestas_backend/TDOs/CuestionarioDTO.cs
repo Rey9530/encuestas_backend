@@ -10,12 +10,11 @@ namespace encuestas_backend.TDOs
     public class CuestionarioDTO
     {
  
-        public int IdCuestionario { get; set; } 
+        public int Id { get; set; } 
         public string Titulo { get; set; } 
         public string Descripcion { get; set; }  
         public DateTime FechaCreacion { get; set; }
-        public EstadosRegistro Estado { get; set; } 
-        public string idUsuarioCreador { get; set; }  
+        public EstadosRegistro Estado { get; set; }  
         
     }
 }

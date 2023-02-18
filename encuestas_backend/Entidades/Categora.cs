@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using encuestas_backend.Entidades;
 using encuestas_backend.Enums;
 
 namespace api_autore_libros.Entidades
 {
-    public class Categorias{
+    public class Categorias: IId{
         public int Id { get; set; }
 
         [Required]

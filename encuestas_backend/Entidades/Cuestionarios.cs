@@ -4,10 +4,10 @@ using encuestas_backend.Enums;
 
 namespace encuestas_backend.Entidades
 {
-    public class Cuestionario
+    public class Cuestionario: IId
     {
         [Key]
-        public int IdCuestionario { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "El campo {0}, es requerido")]
         [StringLength(maximumLength: 120, ErrorMessage = "El campo {0} no debe tene mas de {1} caracter")]
         public string Titulo { get; set; }

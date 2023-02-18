@@ -12,14 +12,13 @@ namespace encuestas_backend.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class CuestionarioController : ControllerBase
+    public class CuestionarioController : CustomBaseController
     {
         private readonly AplicationDbContext context;
         private readonly IMapper mapper;
-
         public UserManager<UserCustom> userManager { get; }
 
-        public CuestionarioController(AplicationDbContext context, IMapper mapper, UserManager<UserCustom> userManager)
+        public CuestionarioController(AplicationDbContext context, IMapper mapper, UserManager<UserCustom> userManager) : base(context, mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -27,17 +26,15 @@ namespace encuestas_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CuestionarioDTO>>> GetAll(){
-            var cuestionarios = await context.Cuestionario.OrderBy( e=> e.IdCuestionario ).ToListAsync();
-            return mapper.Map<List<CuestionarioDTO>>(cuestionarios);
+        public async Task<ActionResult<List<CuestionarioDTO>>> GetAll(){ 
+            return await Get<Cuestionario, CuestionarioDTO>(); 
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<CuestionarioDTO>> GetOne(int id){
-            var cuestionario = await context.Cuestionario.FirstOrDefaultAsync(e => e.IdCuestionario==id);
-            return mapper.Map<CuestionarioDTO>(cuestionario);
+        public async Task<ActionResult<CuestionarioDTO>> GetOne(int id){ 
+            return await Get<Cuestionario, CuestionarioDTO>(id);  
         }
-// UserManager
+        
         [HttpPost]
         public async Task<ActionResult<CuestionarioDTO>> InsertOne([FromBody] CuestionarioCrearDTO cuestionarioCrearDTO){ 
             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type=="email").FirstOrDefault();
@@ -51,30 +48,14 @@ namespace encuestas_backend.Controllers
             return mapper.Map<CuestionarioDTO>(cuestionario);
         }
 
-
         [HttpPut("id:int")]
-        public async Task<ActionResult<CuestionarioDTO>> UpdateOne(int id,[FromBody] CuestionarioCrearDTO cuestionarioCrearDTO){ 
-            var datos = await context.Cuestionario.FirstOrDefaultAsync( e => e.IdCuestionario==id );
-            if(datos==null){
-                return NotFound();
-            }
-            var cuestionario = mapper.Map<Cuestionario>(cuestionarioCrearDTO); 
-            cuestionario.IdCuestionario=id;
-            context.Entry(cuestionario).State = EntityState.Modified; 
-            await context.SaveChangesAsync();
-            return mapper.Map<CuestionarioDTO>(cuestionario);
+        public async Task<ActionResult<CuestionarioDTO>> UpdateOne(int id,[FromBody] CuestionarioCrearDTO cuestionarioCrearDTO){  
+            return await Put<CuestionarioCrearDTO, Cuestionario, CuestionarioDTO>(cuestionarioCrearDTO, id); 
         }
-
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DelteOne(int id){
-            var entity = await context.Cuestionario.FirstOrDefaultAsync( e => e.IdCuestionario==id );
-            if(entity==null){
-                return NotFound();
-            }
-            context.Remove(entity);
-            await context.SaveChangesAsync();
-            return NoContent();
+            return await Delete<Cuestionario>(id);
         }
     }
 }
