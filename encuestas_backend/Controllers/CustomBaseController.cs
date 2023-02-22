@@ -57,7 +57,7 @@ namespace encuestas_backend.Controllers
 
         protected async Task<ActionResult> Delete<TEntidad>(int id) where TEntidad : class, IId
         {
-            var entidad = await context.Set<TEntidad>().AsNoTracking().FirstOrDefaultAsync( e => e.Id==id );
+            var entidad = await context.Set<TEntidad>().FirstOrDefaultAsync( e => e.Id==id );
             if(entidad==null){
                 return NotFound();
             }

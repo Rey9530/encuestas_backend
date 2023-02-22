@@ -15,6 +15,15 @@ namespace encuestas_backend.helpers
 
             CreateMap<Cuestionario, CuestionarioDTO>().ReverseMap();
             CreateMap<CuestionarioCrearDTO, Cuestionario>();
+
+
+            CreateMap<CuestionarioPreguntas, PreguntaCreacionDTO>().ReverseMap();
+            CreateMap<CuestionarioPreguntas, CuestionarioPreguntaDTO>();
+            CreateMap<CuestionarioPreguntasRespuestas, RespuestasDTO>();
+
+
+            CreateMap<CuestionarioPreguntasRespuestas, RespuestasCreacionDTO>().ReverseMap();
+            // CreateMap<CuestionarioCrearDTO, Cuestionario>();
         }
     }
 }

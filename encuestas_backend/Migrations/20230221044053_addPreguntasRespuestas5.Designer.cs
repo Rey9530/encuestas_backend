@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using encuestas_backend;
@@ -11,9 +12,11 @@ using encuestas_backend;
 namespace encuestasbackend.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230221044053_addPreguntasRespuestas5")]
+    partial class addPreguntasRespuestas5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,12 +202,10 @@ namespace encuestasbackend.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
 
-                    b.Property<string>("UsuarioId")
+                    b.Property<string>("idUsuarioCreador")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Cuestionario");
                 });
@@ -222,6 +223,9 @@ namespace encuestasbackend.Migrations
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdCuestionario")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Pregunta")
                         .HasColumnType("text");
@@ -243,6 +247,9 @@ namespace encuestasbackend.Migrations
 
                     b.Property<bool>("EsCorrecta")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("IdPregunta")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("PreguntaId")
                         .HasColumnType("integer");
@@ -268,6 +275,9 @@ namespace encuestasbackend.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<int?>("CuestionarioId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -310,6 +320,8 @@ namespace encuestasbackend.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CuestionarioId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -372,15 +384,6 @@ namespace encuestasbackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("encuestas_backend.Entidades.Cuestionario", b =>
-                {
-                    b.HasOne("encuestas_backend.Entidades.UserCustom", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("encuestas_backend.Entidades.CuestionarioPreguntas", b =>
                 {
                     b.HasOne("encuestas_backend.Entidades.Cuestionario", "Cuestionario")
@@ -397,6 +400,18 @@ namespace encuestasbackend.Migrations
                         .HasForeignKey("PreguntaId");
 
                     b.Navigation("Pregunta");
+                });
+
+            modelBuilder.Entity("encuestas_backend.Entidades.UserCustom", b =>
+                {
+                    b.HasOne("encuestas_backend.Entidades.Cuestionario", null)
+                        .WithMany("Usuario")
+                        .HasForeignKey("CuestionarioId");
+                });
+
+            modelBuilder.Entity("encuestas_backend.Entidades.Cuestionario", b =>
+                {
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("encuestas_backend.Entidades.CuestionarioPreguntas", b =>
