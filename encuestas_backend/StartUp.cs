@@ -11,9 +11,9 @@ using Microsoft.OpenApi.Models;
 
 namespace encuestas_backend
 {
-	public class StartUp
-	{
-		public StartUp(IConfiguration configuration)
+    public class StartUp
+    {
+        public StartUp(IConfiguration configuration)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             Configuration = configuration;
@@ -29,29 +29,30 @@ namespace encuestas_backend
 
             service.AddDbContext<AplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("defaultConnection")));
             service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer( opciones => opciones.TokenValidationParameters = new TokenValidationParameters{
-                    ValidateIssuer=false,
-                    ValidateAudience=false,
-                    ValidateLifetime=true,
-                    ValidateIssuerSigningKey=true,
-                    IssuerSigningKey= new SymmetricSecurityKey(
+                .AddJwtBearer(opciones => opciones.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(Configuration["llavejwt"])
                         ),
                     ClockSkew = TimeSpan.Zero
-                }); 
-             //service.AddAuthentication();
+                });
+            //service.AddAuthentication();
             service.AddEndpointsApiExplorer();
-            service.AddSwaggerGen( c =>
+            service.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi Cuestionario", Version = "V1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Name="Authorization",
-                    Type=SecuritySchemeType.ApiKey,
-                    Scheme="Bearer",
-                    BearerFormat="JWT",
-                    In=ParameterLocation.Header
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -70,10 +71,14 @@ namespace encuestas_backend
             });
             service.AddIdentity<UserCustom, IdentityRole>()
                 .AddEntityFrameworkStores<AplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddErrorDescriber<CustomeIdentityErrorDescribe>();
 
-            service.AddTransient<HashService>();
-            // service.AddAutoMapper(typeof(StartUp));
+            service.AddTransient<HashService>(); 
+            service.AddCors(p => p.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -86,6 +91,7 @@ namespace encuestas_backend
             }
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
